@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Ble jammer installer</title>
+    <meta name="description" content="Easily allow users to install Ble jammer." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    
+    <style>
+      body {
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+          Roboto, Ubuntu, sans-serif;
+        font-size: 20px;
+        padding: 0;
+        margin: 0;
+        line-height: 1.6;
+        background-color: #000000;
+        color: #ffffff;
+        overflow-x: hidden;
+        /* Zentriert den gesamten Body-Inhalt */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      /* Neuer Haupt-Container für einheitliche Breiten */
+      .container {
+        width: 90%;
+        max-width: 900px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 0;
+      }
+
+      /* Einheitliches Styling für alle Bilder */
+      .container img {
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+        margin: 40px 0;
+        display: block;
+        border-radius: 8px; /* Optional: Macht die Ecken weicher */
+      }
+
+      .text-block {
+        max-width: 800px;
+        margin: 20px 0;
+      }
+
+      .radios {
+        padding: 0;
+        margin: 40px 0;
+        width: 100%;
+        max-width: 600px; /* Hält die Checkbox-Reihe kompakt und zentriert */
+      }
+
+      .radios li {
+        list-style: none;
+        background: #292929;
+        color: #ffffff;
+        padding: 30px 20px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Skalierung der Checkbox etwas angepasst für bessere Proportionen */
+      .radios input[type="radio"] {
+        transform: scale(2.5);
+        margin-right: 20px;
+        cursor: pointer;
+      }
+
+      .radios label {
+        cursor: pointer;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+      }
+
+      /* Browser Warnung Pop-up */
+      #browser-warning {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 10000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .warning-content {
+        background: #222;
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        border: 2px solid #ff4444;
+        max-width: 500px;
+      }
+
+      .warning-content button {
+        margin-top: 25px;
+        padding: 12px 25px;
+        background: #ff4444;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      /* ESP Tool Fallback-Text verstecken */
+      esp-web-install-button { font-size: 0; margin-top: 20px; }
+      esp-web-install-button span, esp-web-install-button div { display: none !important; }
+    </style>
+
+    <script type="module" src="https://unpkg.com/esp-web-tools@8.0.1/dist/web/install-button.js?module"></script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="text-block">
+        <p>
+          The Device is a critical intervention and artistic exploration<br>that takes the form of a Bluetooth jammer. It engages with<br>the increasing tendency in modern society to isolate<br>ourselves from the acoustic environment through wireless,<br>ever-smaller headphones and audio devices.
+        </p>  
+      </div>
+      
+      <img src="images/upload.png" alt="Upload Info">
+      
+      <div class="text-block">
+        <h3>How to Upload Your Code to the ESP Board</h3>
+        <p>1. Connect the ESP device to your PC using a USB cable.<br>Ensure the cable is a data cable and not just a charging cable.</p>
+      </div>
+
+      <img src="images/HowtoUploadCode2.png" alt="Plug in image">
+
+      <div class="text-block">
+        <p>2. Select the checkbox, click "Connect" and install Ble2:</p>
+      </div>
+
+      <ul class="radios">
+        <li>
+          <label>
+            <input type="radio" name="type" value="Ble2" /> 
+            Dual Nrf24l01 Vspi and Hspi pins
+          </label>
+        </li>
+      </ul>
+
+      <esp-web-install-button class="invisible">
+          <span slot="unsupported"></span>
+      </esp-web-install-button>
+
+      <img src="images/instructions.png" alt="Instructions">
+    </div>
+
+    <div id="browser-warning">
+      <div class="warning-content">
+        <p>Your browser does not support installing things on ESP devices. <br><br> <strong>Please use Google Chrome or Microsoft Edge.</strong></p>
+        <button onclick="document.getElementById('browser-warning').style.display='none'">Close</button>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('input[name="type"]').forEach(radio => {
+        radio.addEventListener("click", (event) => {
+          // Check for Web Serial support
+          const isSupported = 'serial' in navigator;
+
+          if (!isSupported) {
+            event.preventDefault(); // Checkbox wird nicht markiert
+            document.getElementById('browser-warning').style.display = 'flex';
+          } else {
+            const button = document.querySelector('esp-web-install-button');
+            button.manifest = `web/manifest_${radio.value}.json`;
+            button.classList.remove('invisible');
+          }
+        });
+      });
+    </script>
+
+  </body>
+</html>
